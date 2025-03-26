@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSearch</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="heading">CodeSearch</div>
+        <div class="sub-heading bt">Search for your favourite coding problems from</div>
+    </header>
+
+    <div class="logo-container">
+        <div class="slider">
+            <img src="/static/images/lc.png" alt="LeetCode Logo">
+            <img src="/static/images/cforce.png" alt="Codeforces Logo">
+            <img src="/static/images/codechef.png" alt="CodeChef Logo">
+            <img src="/static/images/atcoder.png" alt="AtCoder Logo">
+        </div>
+    </div>
+
+    <!-- 🔹 Updated Search Container -->
+    <div class="search-container">
+        <form id="search-form" action="{{ url_for('start_page') }}" method="post">
+            <div class="search-box">
+                <input required type="text" id="query" name="Query" placeholder="Enter the keyword...">
+            </div>
+            <div class="platform-buttons">
+                <label class="platform-button" for="leetcode">
+                    <input type="checkbox" id="leetcode" name="source" value="leetcode" checked>
+                    <div class="bt">LeetCode</div>
+                </label>
+                <label class="platform-button" for="codeforces">
+                    <input type="checkbox" id="codeforces" name="source" value="codeforces">
+                    <div class="bt">CodeForces</div>
+                </label>
+                <label class="platform-button" for="codechef">
+                    <input type="checkbox" id="codechef" name="source" value="codechef">
+                    <div class="bt">CodeChef</div>
+                </label>
+                <label class="platform-button" for="atcoder">
+                    <input type="checkbox" id="atcoder" name="source" value="atcoder">
+                    <div class="bt">Atcoder</div>
+                </label>
+                <label class="platform-button" for="spoj">
+                    <input type="checkbox" id="spoj" name="source" value="Spoj">
+                    <div class="bt">Spoj</div>
+                </label>
+            </div>
+
+            <!-- 🔄 Loading Indicator (Positioned in the same place as the button) -->
+            <div class="button-container">
+                <button type="submit" id="submit-button" form="search-form">Search</button>
+                <div id="loading-indicator">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function (event) {
+            var checkboxes = document.querySelectorAll('input[name="source"]:checked');
+            var sources = [];
+            checkboxes.forEach(function (checkbox) {
+                sources.push(checkbox.value);
+            });
+
+            // Avoid multiple hidden inputs
+            var existingInput = document.querySelector('input[name="sources"]');
+            if (!existingInput) {
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'sources';
+                hiddenInput.value = sources.join(',');
+                this.appendChild(hiddenInput);
+            }
+
+            var submitButton = document.getElementById("submit-button");
+            var loadingIndicator = document.getElementById("loading-indicator");
+
+            if (submitButton && loadingIndicator) {
+                submitButton.classList.add("hidden-button");
+                loadingIndicator.style.display = "block"; 
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const loadingIndicator = document.getElementById("loading-indicator");
+            if (loadingIndicator) {
+                loadingIndicator.style.display = "none";
+            }
+        });
+
+        $(document).ready(function () {
+            var placeholders = [
+                "Search for 'Binary Search'...",
+                "Search for 'Sliding Window'...",
+                "Search for 'Dynamic Programming'...",
+                "Search for 'Two Sum'...",
+                "Search for 'Graph BFS'..."
+            ];
+            var index = 0;
+
+            setInterval(() => {
+                $('#query').attr('placeholder', placeholders[index]);
+                index = (index + 1) % placeholders.length;
+            }, 3000);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const slider = document.querySelector(".slider");
+            const images = Array.from(slider.children);
+            images.forEach((img) => {
+                const clone = img.cloneNode(true);
+                slider.appendChild(clone);
+            });
+
+            images.forEach((img) => {
+                const clone = img.cloneNode(true);
+                slider.appendChild(clone);
+            });
+
+            let scrollAmount = 0;
+            function slideImages() {
+                scrollAmount -= 1; 
+                slider.style.transform = `translateX(${scrollAmount}px)`;
+
+                if (Math.abs(scrollAmount) >= slider.scrollWidth / 2) {
+                    scrollAmount = 0;
+                }
+            }
+            let interval = setInterval(slideImages, 12);
+            slider.addEventListener("mouseover", () => clearInterval(interval));
+            slider.addEventListener("mouseleave", () => (interval = setInterval(slideImages, 12)));
+        });
+
+    document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll(".platform-button input").forEach((checkbox) => {
+    if (localStorage.getItem(checkbox.id) === "checked") {
+      checkbox.checked = true; 
+      checkbox.parentElement.classList.add("checked"); 
+    } else {
+      checkbox.checked = false; 
+      checkbox.parentElement.classList.remove("checked");
+    }
+
+    checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+            checkbox.parentElement.classList.add("checked"); 
+            localStorage.setItem(checkbox.id, "checked"); 
+        } else {
+            checkbox.parentElement.classList.remove("checked");  
+            localStorage.removeItem(checkbox.id);
+        }
+        });
+    });
+    });
+
+    </script>
+</body>
+
+</html>
